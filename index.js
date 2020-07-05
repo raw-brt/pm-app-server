@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db.config.js');
 
@@ -11,10 +12,11 @@ connectDB();
 app.use(express.json({ extended: true }));
 
 // Set homepage
-app.get('/', (req, res) => res.send('Hi'));
+app.get('/', (_, res) => res.send('Hi'));
 
 // Import routes
 app.use('/api/users', require('./routes/user.routes'));
+app.use('/api/auth', require('./routes/auth.routes'));
 
 // Start app
 const PORT = process.env.PORT || 4000;
