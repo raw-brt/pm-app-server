@@ -17,6 +17,7 @@ app.get('/', (_, res) => res.send('Hi'));
 // Import routes
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/projects', require('./routes/project.routes'));
 
 // Start app
 const PORT = process.env.PORT || 4000;
