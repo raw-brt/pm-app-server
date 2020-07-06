@@ -6,9 +6,6 @@ const projectSchema = mongoose.Schema({
       required: true,
       trim: true
     },
-    tasks: {
-      type: Array
-    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'

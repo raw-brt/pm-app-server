@@ -1,6 +1,5 @@
 const Project = require('../models/project.model');
 const {validationResult} = require('express-validator');
-const { update } = require('../models/project.model');
 
 module.exports.createProject = async (req, res) => {
 
@@ -66,4 +65,26 @@ module.exports.updateProject = async (req, res) => {
       console.log(error);
       res.status(500).send('Something went wrong when trying to update project');
     }
+};
+
+module.exports.deleteProject = async (req, res) => {
+  try {
+    let existingProject = await Project.findById(req.params.id);
+
+    // Check project existence
+    if (!existingProject) return res.status(404).json({ msg: 'Project not found' });
+
+    // Verify project owner
+    if (existingProject.owner.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'Permission denied' });
+    }
+
+    // Delete project
+    await Project.findOneAndRemove({ _id: req.params.id });
+    res.json({ msg: 'Project removed successfully' })
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Something went wrong when trying to delete project');
+  };
 };
