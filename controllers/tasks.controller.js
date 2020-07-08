@@ -8,7 +8,6 @@ module.exports.createTask = async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-
     // Check if passed project exists
     const existingProject = await Project.findById(req.params.id);
     if (!existingProject) return res.status(404).json({ msg: 'Project not found' });
@@ -31,7 +30,6 @@ module.exports.createTask = async (req, res) => {
 
 
 module.exports.getTasks = async (req, res) => {
-
   try {
     // Look for errors
     const errors = validationResult(req);
@@ -58,7 +56,6 @@ module.exports.getTasks = async (req, res) => {
 
 
 module.exports.updateTask = async (req, res) => {
-
   try {
     // Look for errors
     const errors = validationResult(req);

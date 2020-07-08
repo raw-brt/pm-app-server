@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db.config.js');
+const cors = require('cors');
 
 // Spin up server
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 connectDB();
 
 // Apply middlewares
+app.use(cors());
 app.use(express.json({ extended: true }));
 
 // Set homepage

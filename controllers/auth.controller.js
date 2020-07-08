@@ -14,7 +14,6 @@ module.exports.authUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    
     // Check if user exists
     let user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "User doesn't exist" });
@@ -40,4 +39,14 @@ module.exports.authUser = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+module.exports.getAuthUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json({ user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: 'Something went wrong when authenticating user' });
+  };
 };
