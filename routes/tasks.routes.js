@@ -15,7 +15,7 @@ router.post('/',
 );
 
 // Get tasks for a given project
-router.get('/:projectId',
+router.get('/',
   authMiddleware.isAuthenticated,
   tasksController.getTasks
 );

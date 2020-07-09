@@ -3,16 +3,17 @@ const Project = require('../models/project.model');
 const { validationResult } = require('express-validator');
 
 module.exports.createTask = async (req, res) => {
+  console.log(req.body)
   // Look for errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
     // Check if passed project exists
-    const existingProject = await Project.findById(req.params.id);
+    const existingProject = await Project.findById(req.body.project);
     if (!existingProject) return res.status(404).json({ msg: 'Project not found' });
 
-    // Check project's owner
+    // // Check project's owner
     if (existingProject.owner.toString() !== req.user.id) {
       return res.status(401).json({ msg: 'Permission denied' });
     };
@@ -28,15 +29,15 @@ module.exports.createTask = async (req, res) => {
   }
 };
 
-
 module.exports.getTasks = async (req, res) => {
   try {
+    console.log(req.query.project)
     // Look for errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     // Check if passed project exists
-    const existingProject = await Project.findById(req.params.projectId);
+    const existingProject = await Project.findById(req.query.project);
     if (!existingProject) return res.status(404).json({ msg: "Project not found" });
 
     // Check project owner
@@ -45,7 +46,8 @@ module.exports.getTasks = async (req, res) => {
     };
 
     // Get tasks for a given project
-    const tasks = await Task.find({ project: req.params.projectId });
+    const tasks = await Task.find({ project:  req.query.project  });
+    console.log(tasks)
     res.json(tasks);
     
   } catch (error) {
