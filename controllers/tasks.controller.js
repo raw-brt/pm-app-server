@@ -31,7 +31,6 @@ module.exports.createTask = async (req, res) => {
 
 module.exports.getTasks = async (req, res) => {
   try {
-    console.log(req.query.project)
     // Look for errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -46,8 +45,7 @@ module.exports.getTasks = async (req, res) => {
     };
 
     // Get tasks for a given project
-    const tasks = await Task.find({ project:  req.query.project  });
-    console.log(tasks)
+    const tasks = await Task.find({ project:  req.query.project  }).sort({ createdAt: -1 });
     res.json(tasks);
     
   } catch (error) {
@@ -68,20 +66,20 @@ module.exports.updateTask = async (req, res) => {
     if (!existingTask) return res.status(404).json({ msg: 'Task not found' });
 
     // Check project owner
-    if (existingProject.owner.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'Permission denied' });
-    };
+    // if (existingProject.owner.toString() !== req.user.id) {
+    //   return res.status(401).json({ msg: 'Permission denied' });
+    // };
 
     // Create object with updated data
-    const newTask = {};
-
-    if (req.body.name) newTask.name = req.body.name;
-    if (req.body.status) newTask.status = req.body.status;
+    const newTask = {
+      name: req.body.name,
+      status: req.body.status
+    };
 
     // Update task
     updatedTask = await Task.findOneAndUpdate({ _id: req.params.taskId }, newTask, { new: true });
 
-    res.json(updatedTask);
+    res.json({ updatedTask });
     
   } catch (error) {
     console.log(error);
@@ -92,6 +90,7 @@ module.exports.updateTask = async (req, res) => {
 
 module.exports.deleteTask = async (req, res) => {
   try {
+    // const { projectId } = req.body;
     // Look for errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -101,9 +100,9 @@ module.exports.deleteTask = async (req, res) => {
     if (!existingTask) return res.status(404).json({ msg: 'Task not found' });
 
     // Check project owner
-    if (existingProject.owner.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'Permission denied' });
-    };
+    // if (existingProject.owner.toString() !== req.user.id) {
+    //   return res.status(401).json({ msg: 'Permission denied' });
+    // };
 
     // Delete task
     await Task.findOneAndRemove({ _id: req.params.taskId });
